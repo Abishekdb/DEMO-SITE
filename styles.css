@@ -1,192 +1,43 @@
-/* General Styles */
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  line-height: 1.6;
-  color: #333;
-  background-color: #f9f9f9;
-  transition: background 0.3s, color 0.3s;
-}
+document.addEventListener("DOMContentLoaded", function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const linkParam = urlParams.get('DB_ANNA');
+    const countdownElement = document.getElementById("countdown");
+    const progressElement = document.getElementById("progress");
+    const manualRedirect = document.getElementById("manualRedirect");
+    const cancelRedirect = document.getElementById("cancelRedirect");
+    
+    let timeLeft = 5;
+    let redirecting = true;
 
-h1, h2, h3 {
-  margin-bottom: 1rem;
-}
+    if (linkParam) {
+        const interval = setInterval(() => {
+            if (!redirecting) {
+                clearInterval(interval);
+                return;
+            }
 
-a {
-  text-decoration: none;
-  color: inherit;
-}
+            timeLeft--;
+            countdownElement.innerText = timeLeft;
+            progressElement.style.width = `${(5 - timeLeft) * 20}%`;
 
-button {
-  cursor: pointer;
-}
+            if (timeLeft <= 0) {
+                clearInterval(interval);
+                if (redirecting) {
+                    window.location.href = `https://telegram.me/Testingpermanentbot?start=${linkParam}`;
+                }
+            }
+        }, 1000);
+        
+        manualRedirect.href = `https://telegram.me/Testingpermanentbot?start=${linkParam}`;
+    } else {
+        document.querySelector("h1").innerText = "Invalid Link!";
+        progressElement.style.display = "none";
+    }
 
-/* Navbar */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background: #333;
-  color: #FFD700; /* Luxurious yellow */
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-.nav-links {
-  list-style: none;
-  display: flex;
-  gap: 1rem;
-}
-
-.nav-links li a {
-  color: #FFD700; /* Luxurious yellow */
-  transition: color 0.3s;
-}
-
-.nav-links li a:hover {
-  color: #00bcd4;
-}
-
-/* Day/Night Toggle */
-.toggle-theme {
-  background: none;
-  border: none;
-  color: #FFD700; /* Luxurious yellow */
-  font-size: 1.5rem;
-  cursor: pointer;
-}
-
-/* Hero Section */
-.hero {
-  background: url('https://via.placeholder.com/1920x1080') no-repeat center center/cover;
-  height: 100vh;
-  color: #FFD700; /* Luxurious yellow */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.hero-content {
-  max-width: 600px;
-}
-
-.cta-button {
-  background: #00bcd4;
-  color: #FFD700; /* Luxurious yellow */
-  border: none;
-  padding: 0.8rem 1.5rem;
-  font-size: 1rem;
-  border-radius: 5px;
-  transition: background 0.3s;
-}
-
-.cta-button:hover {
-  background: #008c9e;
-}
-
-/* About Section */
-.about {
-  padding: 2rem;
-  text-align: center;
-}
-
-/* Services Section */
-.services {
-  padding: 2rem;
-  text-align: center;
-}
-
-.service-cards {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-}
-
-.card {
-  background: #f4f4f4;
-  padding: 1rem;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  width: 300px;
-}
-
-.card h3 {
-  margin-bottom: 0.5rem;
-}
-
-/* Contact Section */
-.contact {
-  padding: 2rem;
-  text-align: center;
-}
-
-.contact-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-}
-
-.btn {
-  background: #00bcd4;
-  color: #FFD700; /* Luxurious yellow */
-  padding: 0.8rem 1.5rem;
-  border-radius: 5px;
-  text-decoration: none;
-  transition: background 0.3s;
-}
-
-.btn:hover {
-  background: #008c9e;
-}
-
-/* Footer */
-footer {
-  background: #333;
-  color: #FFD700; /* Luxurious yellow */
-  text-align: center;
-  padding: 1rem;
-}
-
-.social-icons {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-bottom: 0.5rem;
-}
-
-.social-icon {
-  font-size: 1.5rem;
-  color: #FFD700; /* Luxurious yellow */
-  transition: color 0.3s;
-}
-
-.social-icon:hover {
-  color: #00bcd4;
-}
-
-/* Dark Mode */
-body.dark {
-  background-color: #121212;
-  color: #FFD700; /* Luxurious yellow */
-}
-
-body.dark .navbar {
-  background: #222;
-}
-
-body.dark .card {
-  background: #1e1e1e;
-  color: #FFD700; /* Luxurious yellow */
-}
-
-body.dark .btn {
-  background: #444;
-}
-
-body.dark .btn:hover {
-  background: #555;
-}
+    cancelRedirect.addEventListener("click", function() {
+        redirecting = false;
+        countdownElement.innerText = "Cancelled";
+        progressElement.style.width = "0%";
+        document.querySelector(".spinner").style.display = "none";
+    });
+});
